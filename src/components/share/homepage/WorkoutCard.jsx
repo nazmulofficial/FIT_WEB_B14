@@ -14,7 +14,7 @@ const WorkoutCard = ({ workout }) => {
 
   return (
     <Link href={`/workout/${id}`} className="block">
-      <div className="group cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-[#15171c] transition-all duration-300 hover:-translate-y-1 hover:border-white/20">
+      <div className="group cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-[#06153a] transition-all duration-300 hover:-translate-y-1 hover:border-white/20">
         <div className="overflow-hidden">
           <img
             src={image}

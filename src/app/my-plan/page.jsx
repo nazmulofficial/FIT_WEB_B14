@@ -1,54 +1,97 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useFitLog } from "@/context/FitLogContext";
 
 const MyPlan = () => {
-  const { plan, saved, removeFromPlan, removeFromSaved } = useFitLog();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [activeTab, setActiveTab] = useState("plan");
+  const {
+    plan,
+    saved,
+    removeFromPlan,
+    removeFromSaved,
+  } = useFitLog();
+
   const [sortBy, setSortBy] = useState("duration");
+  const [completed, setCompleted] = useState([]);
 
-  const currentWorkouts = activeTab === "plan" ? plan : saved;
+  const activeTab =
+    searchParams.get("tab") === "saved"
+      ? "saved"
+      : "plan";
 
-  const sortedWorkouts = [...currentWorkouts].sort((a, b) => {
-    if (sortBy === "duration") {
-      return a.duration - b.duration;
+  const currentWorkouts =
+    activeTab === "saved" ? saved : plan;
+
+  const sortedWorkouts = [...currentWorkouts].sort(
+    (a, b) => {
+      if (sortBy === "duration") {
+        return (
+          Number(a.duration || 0) -
+          Number(b.duration || 0)
+        );
+      }
+
+      if (sortBy === "calories") {
+        return (
+          Number(a.caloriesBurned || 0) -
+          Number(b.caloriesBurned || 0)
+        );
+      }
+
+      if (sortBy === "rating") {
+        return (
+          Number(b.rating || 0) -
+          Number(a.rating || 0)
+        );
+      }
+
+      return 0;
     }
-
-    if (sortBy === "calories") {
-      return a.caloriesBurned - b.caloriesBurned;
-    }
-
-    if (sortBy === "rating") {
-      return b.rating - a.rating;
-    }
-
-    return 0;
-  });
+  );
 
   const totalMinutes = plan.reduce(
-    (total, workout) => total + Number(workout.duration || 0),
-    0,
+    (total, workout) =>
+      total + Number(workout.duration || 0),
+    0
   );
 
   const totalCalories = plan.reduce(
-    (total, workout) => total + Number(workout.caloriesBurned || 0),
-    0,
+    (total, workout) =>
+      total + Number(workout.caloriesBurned || 0),
+    0
   );
 
+  const handleTabChange = (tab) => {
+    router.push(`/my-plan?tab=${tab}`);
+  };
+
   const handleRemove = (id) => {
-    if (activeTab === "plan") {
-      removeFromPlan(id);
-    } else {
+    if (activeTab === "saved") {
       removeFromSaved(id);
+    } else {
+      removeFromPlan(id);
     }
   };
 
+  const handleDone = (id) => {
+    setCompleted((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((item) => item !== id);
+      }
+
+      return [...prev, id];
+    });
+  };
+
   return (
-    <main className="min-h-screen bg-[#090a0c] px-4 py-30 text-white sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#090a0c] px-4 py-8 text-white sm:px-6 lg:px-8">
       <section className="mx-auto max-w-7xl">
+
         <div className="border border-white/10 bg-[#101216] px-5 py-5 sm:px-7">
           <h1 className="font-oswald text-3xl font-bold uppercase leading-none sm:text-4xl">
             MY PLAN
@@ -60,160 +103,259 @@ const MyPlan = () => {
         </div>
 
         <div className="mt-4 grid grid-cols-1 border border-white/10 bg-[#101216] sm:grid-cols-3">
-          <div className="border-b border-white/10 px-5 py-5 sm:border-b-0 sm:border-r">
-            <p className="text-[10px] text-gray-500">Exercises</p>
 
-            <p className="mt-1 font-oswald text-3xl font-bold text-[#ccff00]">
+          <div className="border-b border-white/10 px-4 py-4 sm:border-b-0 sm:border-r">
+            <p className="text-xs text-gray-500">
+              Exercises
+            </p>
+
+            <p className="mt-2 text-2xl font-bold text-[#ccff00]">
               {plan.length}
             </p>
           </div>
 
-          <div className="border-b border-white/10 px-5 py-5 sm:border-b-0 sm:border-r">
-            <p className="text-[10px] text-gray-500">Minutes</p>
+          <div className="border-b border-white/10 px-4 py-4 sm:border-b-0 sm:border-r">
+            <p className="text-xs text-gray-500">
+              Minutes
+            </p>
 
-            <p className="mt-1 font-oswald text-3xl font-bold text-white">
+            <p className="mt-2 text-2xl font-bold text-white">
               {totalMinutes}
             </p>
           </div>
 
-          <div className="px-5 py-5">
-            <p className="text-[10px] text-gray-500">Calories</p>
+          <div className="px-4 py-4">
+            <p className="text-xs text-gray-500">
+              Calories
+            </p>
 
-            <p className="mt-1 font-oswald text-3xl font-bold text-white">
+            <p className="mt-2 text-2xl font-bold text-white">
               {totalCalories}
             </p>
           </div>
+
         </div>
 
         <div className="mt-4 flex flex-col gap-3 border border-white/10 bg-[#101216] p-2 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex">
+
+          <div className="flex items-center gap-2">
+
             <button
-              onClick={() => setActiveTab("plan")}
-              className={`px-5 py-2 text-xs font-medium transition ${
+              type="button"
+              onClick={() => handleTabChange("plan")}
+              className={`rounded-md px-4 py-2 text-xs font-medium transition ${
                 activeTab === "plan"
-                  ? "rounded-md bg-[#25282e] text-white"
-                  : "text-gray-500 hover:text-white"
+                  ? "bg-[#292d35] text-white"
+                  : "text-gray-500 hover:bg-white/5 hover:text-white"
               }`}
             >
               Today's Plan
             </button>
 
             <button
-              onClick={() => setActiveTab("saved")}
-              className={`px-5 py-2 text-xs font-medium transition ${
+              type="button"
+              onClick={() => handleTabChange("saved")}
+              className={`rounded-md px-4 py-2 text-xs font-medium transition ${
                 activeTab === "saved"
-                  ? "rounded-md bg-[#25282e] text-white"
-                  : "text-gray-500 hover:text-white"
+                  ? "bg-[#292d35] text-white"
+                  : "text-gray-500 hover:bg-white/5 hover:text-white"
               }`}
             >
               Saved
             </button>
+
           </div>
 
           <div className="flex items-center gap-2 px-2">
-            <span className="text-[10px] text-gray-500">Sort By</span>
+
+            <span className="text-xs text-gray-500">
+              Sort By
+            </span>
 
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="rounded-md border border-white/10 bg-[#181a1f] px-3 py-2 text-[10px] text-gray-300 outline-none"
+              className="rounded-md border border-white/10 bg-[#181b20] px-3 py-2 text-xs text-white outline-none focus:border-[#ccff00]"
             >
-              <option value="duration">Duration</option>
+              <option value="duration">
+                Duration
+              </option>
 
-              <option value="calories">Calories</option>
+              <option value="calories">
+                Calories
+              </option>
 
-              <option value="rating">Rating</option>
+              <option value="rating">
+                Rating
+              </option>
             </select>
+
           </div>
+
         </div>
 
         {sortedWorkouts.length === 0 ? (
+
           <div className="mt-4 flex min-h-[330px] flex-col items-center justify-center border border-white/10 bg-[#101216] px-5 text-center">
-            <h2 className="font-oswald text-xl font-bold uppercase text-white">
-              NOTHING HERE YET
+
+            <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-[#181b20]">
+              <span className="text-xl text-gray-500">
+                {activeTab === "saved" ? "♡" : "+"}
+              </span>
+            </div>
+
+            <h2 className="mt-5 font-oswald text-2xl font-bold uppercase text-white">
+              {activeTab === "saved"
+                ? "No saved workouts"
+                : "Your plan is empty"}
             </h2>
 
-            <p className="mt-2 text-xs text-gray-500">
-              Browse the library and add a lift to get moving.
+            <p className="mt-2 max-w-md text-xs leading-5 text-gray-500">
+              {activeTab === "saved"
+                ? "Save workouts from the library and they will appear here."
+                : "Browse the workout library and add exercises to today's plan."}
             </p>
 
             <Link
-              href="/#library"
-              className="mt-5 rounded-full bg-[#ccff00] px-5 py-2 text-[10px] font-bold text-black transition hover:-translate-y-1 hover:bg-[#d7ff33]"
+              href="/"
+              className="mt-5 rounded-md bg-[#ccff00] px-5 py-3 text-xs font-bold uppercase text-black transition hover:bg-[#d8ff3d]"
             >
-              Go to workouts
+              Browse Workouts
             </Link>
+
           </div>
+
         ) : (
-          <div className="mt-4 grid gap-4">
-            {sortedWorkouts.map((workout) => (
-              <div
-                key={workout.id}
-                className="group border border-white/10 bg-[#101216] p-3 transition-all duration-300 hover:border-white/20"
-              >
-                <div className="flex flex-col gap-4 sm:flex-row">
-                  <div className="h-32 w-full overflow-hidden rounded-lg sm:h-28 sm:w-44">
-                    <img
-                      src={workout.image}
-                      alt={workout.name}
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
-                  </div>
 
-                  <div className="flex flex-1 flex-col justify-between">
-                    <div>
+          <div className="mt-4 space-y-4">
+
+            {sortedWorkouts.map((workout) => {
+
+              const isCompleted =
+                completed.includes(workout.id);
+
+              return (
+                <div
+                  key={workout.id}
+                  className={`w-full overflow-hidden rounded-2xl border bg-[#13161c] p-4 transition ${
+                    isCompleted
+                      ? "border-[#ccff00]/40"
+                      : "border-white/10 hover:border-white/20"
+                  }`}
+                >
+
+                  <div className="flex w-full items-center gap-4">
+
+                    <div className="h-24 w-36 shrink-0 overflow-hidden rounded-xl border border-white/10">
+                      <img
+                        src={workout.image}
+                        alt={workout.name}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+
                       <div className="flex flex-wrap gap-2">
-                        {workout.muscleGroups?.[0] && (
-                          <span className="rounded-full bg-[#ccff00] px-2.5 py-1 text-[9px] font-bold uppercase text-black">
-                            {workout.muscleGroups[0]}
-                          </span>
-                        )}
-
-                        {workout.muscleGroups?.[1] && (
-                          <span className="rounded-full bg-[#ccff00] px-2.5 py-1 text-[9px] font-bold uppercase text-black">
-                            {workout.muscleGroups[1]}
-                          </span>
+                        {workout.muscleGroups?.map(
+                          (muscle, index) => (
+                            <span
+                              key={`${workout.id}-${index}`}
+                              className="rounded-full bg-[#ccff00] px-3 py-1 text-[10px] font-bold uppercase text-black"
+                            >
+                              {muscle}
+                            </span>
+                          )
                         )}
                       </div>
 
-                      <h2 className="mt-2 font-oswald text-xl font-bold uppercase text-white transition-colors group-hover:text-[#ccff00]">
+                      <h2
+                        className={`mt-2 truncate font-oswald text-xl font-bold uppercase ${
+                          isCompleted
+                            ? "text-[#ccff00]"
+                            : "text-white"
+                        }`}
+                      >
                         {workout.name}
                       </h2>
 
-                      <p className="mt-1 text-xs text-gray-500">
+                      <p className="truncate text-xs text-gray-500">
                         {workout.equipment}
                       </p>
+
+                      <div className="mt-2 flex items-center gap-4 text-xs text-gray-400">
+
+                        <span>
+                          ◷ {workout.duration} min
+                        </span>
+
+                        <span>
+                          ● {workout.caloriesBurned} kcal
+                        </span>
+
+                        <span>
+                          ☆ {workout.rating}
+                        </span>
+
+                      </div>
+
                     </div>
 
-                    <div className="mt-4 flex flex-wrap items-center gap-4 text-[10px] text-gray-500">
-                      <span>{workout.duration} min</span>
+                    <div className="flex shrink-0 items-center gap-3">
 
-                      <span>{workout.caloriesBurned} kcal</span>
+                      <Link
+                        href={`/workout/${workout.id}`}
+                        className="whitespace-nowrap rounded-full border border-white/20 px-5 py-2.5 text-xs font-medium text-gray-300 transition hover:border-[#ccff00] hover:text-[#ccff00]"
+                      >
+                        View Details
+                      </Link>
 
-                      <span>★ {workout.rating}</span>
+                      {activeTab === "plan" && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleDone(workout.id)
+                          }
+                          className={`flex items-center gap-2 whitespace-nowrap rounded-full px-5 py-2.5 text-xs font-bold transition ${
+                            isCompleted
+                              ? "bg-[#242820] text-[#ccff00]"
+                              : "bg-[#ccff00] text-black hover:bg-[#d8ff3d]"
+                          }`}
+                        >
+                          <span>
+                            {isCompleted ? "✓" : "✓"}
+                          </span>
+
+                          <span>
+                            {isCompleted
+                              ? "Done"
+                              : "Mark as Done"}
+                          </span>
+                        </button>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleRemove(workout.id)
+                        }
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xl text-gray-500 transition hover:bg-red-500/10 hover:text-red-400"
+                      >
+                        ×
+                      </button>
+
                     </div>
+
                   </div>
 
-                  <div className="flex items-center gap-2 sm:flex-col sm:justify-between">
-                    <Link
-                      href={`/workout/${workout.id}`}
-                      className="rounded-md border border-white/10 px-3 py-2 text-[10px] text-gray-400 transition hover:border-[#ccff00] hover:text-[#ccff00]"
-                    >
-                      View Details
-                    </Link>
-
-                    <button
-                      onClick={() => handleRemove(workout.id)}
-                      className="rounded-md border border-white/10 px-3 py-2 text-[10px] text-gray-500 transition hover:border-red-500 hover:text-red-400"
-                    >
-                      Remove
-                    </button>
-                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
+
           </div>
+
         )}
+
       </section>
     </main>
   );

@@ -4,16 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useFitLog } from "@/context/FitLogContext";
-
 import logo from "@/assets/logo.png";
 
 const Navbar = () => {
   const pathname = usePathname();
-
   const { plan, saved } = useFitLog();
 
   return (
-    <nav className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-[#000000]">
+    <nav className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-3">
           <Image
@@ -31,7 +29,7 @@ const Navbar = () => {
         <div className="flex items-center gap-2">
           <Link
             href="/"
-            className={`rounded-full px-4 py-2 text-sm font-medium ${
+            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
               pathname === "/"
                 ? "bg-[#16240c] text-[#ccff00]"
                 : "text-gray-400 hover:text-white"
@@ -41,8 +39,8 @@ const Navbar = () => {
           </Link>
 
           <Link
-            href="/my-plan"
-            className={`rounded-full px-5 py-2 text-sm font-medium ${
+            href="/my-plan?tab=plan"
+            className={`rounded-full px-5 py-2 text-sm font-medium transition ${
               pathname === "/my-plan"
                 ? "bg-[#16240c] text-[#ccff00]"
                 : "text-gray-400 hover:text-white"
@@ -54,10 +52,10 @@ const Navbar = () => {
 
         <div className="flex items-center gap-6 text-sm">
           <Link
-            href="/my-plan"
-            className="flex items-center gap-2 text-gray-300"
+            href="/my-plan?tab=plan"
+            className="flex items-center gap-2 text-gray-300 hover:text-white"
           >
-            Plan
+            <span>Plan</span>
 
             <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#ccff00] px-2 font-bold text-black">
               {plan.length}
@@ -65,10 +63,10 @@ const Navbar = () => {
           </Link>
 
           <Link
-            href="/my-plan"
-            className="flex items-center gap-2 text-gray-300"
+            href="/my-plan?tab=saved"
+            className="flex items-center gap-2 text-gray-300 hover:text-white"
           >
-            Saved
+            <span>Saved</span>
 
             <span className="flex h-6 min-w-6 items-center justify-center rounded-full border border-gray-600 px-2 text-gray-400">
               {saved.length}
