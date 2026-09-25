@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="py-4">
+    <div className="py-30">
       <Banner/> 
       <WorkoutGrid/>     
     </div>

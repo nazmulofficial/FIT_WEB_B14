@@ -30,12 +30,12 @@ const MyPlan = () => {
 
   const totalMinutes = plan.reduce(
     (total, workout) => total + Number(workout.duration || 0),
-    0
+    0,
   );
 
   const totalCalories = plan.reduce(
     (total, workout) => total + Number(workout.caloriesBurned || 0),
-    0
+    0,
   );
 
   const handleRemove = (id) => {
@@ -47,7 +47,7 @@ const MyPlan = () => {
   };
 
   return (
-    <main className="min-h-screen bg-[#090a0c] px-4 py-8 text-white sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#090a0c] px-4 py-30 text-white sm:px-6 lg:px-8">
       <section className="mx-auto max-w-7xl">
         <div className="border border-white/10 bg-[#101216] px-5 py-5 sm:px-7">
           <h1 className="font-oswald text-3xl font-bold uppercase leading-none sm:text-4xl">
@@ -61,9 +61,7 @@ const MyPlan = () => {
 
         <div className="mt-4 grid grid-cols-1 border border-white/10 bg-[#101216] sm:grid-cols-3">
           <div className="border-b border-white/10 px-5 py-5 sm:border-b-0 sm:border-r">
-            <p className="text-[10px] text-gray-500">
-              Exercises
-            </p>
+            <p className="text-[10px] text-gray-500">Exercises</p>
 
             <p className="mt-1 font-oswald text-3xl font-bold text-[#ccff00]">
               {plan.length}
@@ -71,9 +69,7 @@ const MyPlan = () => {
           </div>
 
           <div className="border-b border-white/10 px-5 py-5 sm:border-b-0 sm:border-r">
-            <p className="text-[10px] text-gray-500">
-              Minutes
-            </p>
+            <p className="text-[10px] text-gray-500">Minutes</p>
 
             <p className="mt-1 font-oswald text-3xl font-bold text-white">
               {totalMinutes}
@@ -81,9 +77,7 @@ const MyPlan = () => {
           </div>
 
           <div className="px-5 py-5">
-            <p className="text-[10px] text-gray-500">
-              Calories
-            </p>
+            <p className="text-[10px] text-gray-500">Calories</p>
 
             <p className="mt-1 font-oswald text-3xl font-bold text-white">
               {totalCalories}
@@ -117,26 +111,18 @@ const MyPlan = () => {
           </div>
 
           <div className="flex items-center gap-2 px-2">
-            <span className="text-[10px] text-gray-500">
-              Sort By
-            </span>
+            <span className="text-[10px] text-gray-500">Sort By</span>
 
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               className="rounded-md border border-white/10 bg-[#181a1f] px-3 py-2 text-[10px] text-gray-300 outline-none"
             >
-              <option value="duration">
-                Duration
-              </option>
+              <option value="duration">Duration</option>
 
-              <option value="calories">
-                Calories
-              </option>
+              <option value="calories">Calories</option>
 
-              <option value="rating">
-                Rating
-              </option>
+              <option value="rating">Rating</option>
             </select>
           </div>
         </div>
@@ -200,17 +186,11 @@ const MyPlan = () => {
                     </div>
 
                     <div className="mt-4 flex flex-wrap items-center gap-4 text-[10px] text-gray-500">
-                      <span>
-                        {workout.duration} min
-                      </span>
+                      <span>{workout.duration} min</span>
 
-                      <span>
-                        {workout.caloriesBurned} kcal
-                      </span>
+                      <span>{workout.caloriesBurned} kcal</span>
 
-                      <span>
-                        ★ {workout.rating}
-                      </span>
+                      <span>★ {workout.rating}</span>
                     </div>
                   </div>
 

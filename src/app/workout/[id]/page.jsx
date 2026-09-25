@@ -1,12 +1,9 @@
 import WorkoutActions from "@/components/share/workout/WorkoutActions";
 
 const getWorkout = async (id) => {
-  const res = await fetch(
-    `https://api.abcz.workers.dev/api/fitlog/${id}`,
-    {
-      cache: "no-store",
-    }
-  );
+  const res = await fetch(`https://api.abcz.workers.dev/api/fitlog/${id}`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
     return null;
@@ -22,7 +19,7 @@ const WorkoutDetailsPage = async ({ params }) => {
 
   if (!workout) {
     return (
-      <main className="flex min-h-[70vh] items-center justify-center bg-[#090a0c]">
+      <main className="flex min-h-[70vh] items-center justify-center bg-[#090a0c] ">
         <h1 className="font-oswald text-3xl font-bold uppercase text-white">
           Workout Not Found
         </h1>
@@ -46,7 +43,7 @@ const WorkoutDetailsPage = async ({ params }) => {
   } = workout;
 
   return (
-    <main className="min-h-screen bg-[#090a0c] px-6 py-10">
+    <main className="min-h-screen bg-[#090a0c] px-6 py-30">
       <section className="mx-auto max-w-7xl">
         <div className="grid gap-9 lg:grid-cols-2">
           <div className="group overflow-hidden rounded-xl border border-white/10">
@@ -86,9 +83,7 @@ const WorkoutDetailsPage = async ({ params }) => {
                   Equipment
                 </span>
 
-                <span className="text-xs text-gray-300">
-                  {equipment}
-                </span>
+                <span className="text-xs text-gray-300">{equipment}</span>
               </div>
 
               <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
@@ -96,9 +91,7 @@ const WorkoutDetailsPage = async ({ params }) => {
                   Difficulty
                 </span>
 
-                <span className="text-xs text-gray-300">
-                  {difficulty}
-                </span>
+                <span className="text-xs text-gray-300">{difficulty}</span>
               </div>
 
               <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
@@ -106,9 +99,7 @@ const WorkoutDetailsPage = async ({ params }) => {
                   Sets
                 </span>
 
-                <span className="text-xs text-gray-300">
-                  {sets}
-                </span>
+                <span className="text-xs text-gray-300">{sets}</span>
               </div>
 
               <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
@@ -116,9 +107,7 @@ const WorkoutDetailsPage = async ({ params }) => {
                   Reps
                 </span>
 
-                <span className="text-xs text-gray-300">
-                  {reps}
-                </span>
+                <span className="text-xs text-gray-300">{reps}</span>
               </div>
 
               <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
@@ -126,9 +115,7 @@ const WorkoutDetailsPage = async ({ params }) => {
                   Duration
                 </span>
 
-                <span className="text-xs text-gray-300">
-                  {duration} min
-                </span>
+                <span className="text-xs text-gray-300">{duration} min</span>
               </div>
 
               <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
@@ -146,9 +133,7 @@ const WorkoutDetailsPage = async ({ params }) => {
                   Rating
                 </span>
 
-                <span className="text-xs text-[#ccff00]">
-                  ★ {rating}
-                </span>
+                <span className="text-xs text-[#ccff00]">★ {rating}</span>
               </div>
             </div>
 
