@@ -1,15 +1,29 @@
+import { notFound } from "next/navigation";
 import WorkoutActions from "@/components/share/workout/WorkoutActions";
 
 const getWorkout = async (id) => {
-  const res = await fetch(`https://api.abcz.workers.dev/api/fitlog/${id}`, {
-    cache: "no-store",
-  });
+  try {
+    const res = await fetch(
+      `https://api.abcz.workers.dev/api/fitlog/${id}`,
+      {
+        cache: "no-store",
+      }
+    );
 
-  if (!res.ok) {
+    if (!res.ok) {
+      return null;
+    }
+
+    const workout = await res.json();
+
+    if (!workout || !workout.id) {
+      return null;
+    }
+
+    return workout;
+  } catch {
     return null;
   }
-
-  return res.json();
 };
 
 const WorkoutDetailsPage = async ({ params }) => {
@@ -18,13 +32,7 @@ const WorkoutDetailsPage = async ({ params }) => {
   const workout = await getWorkout(id);
 
   if (!workout) {
-    return (
-      <main className="flex min-h-[70vh] items-center justify-center bg-[#090a0c]">
-        <h1 className="font-oswald text-3xl font-bold uppercase text-white">
-          Workout Not Found
-        </h1>
-      </main>
-    );
+    notFound();
   }
 
   const {
@@ -64,7 +72,7 @@ const WorkoutDetailsPage = async ({ params }) => {
                 {description}
               </p>
 
-              <div className="mt-4 flex gap-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 {muscleGroups?.[0] && (
                   <span className="rounded-full border border-[#ccff00]/30 bg-[#ccff00] px-3 py-1 text-[10px] font-bold uppercase text-black">
                     {muscleGroups[0]}
@@ -84,7 +92,9 @@ const WorkoutDetailsPage = async ({ params }) => {
                     Equipment
                   </span>
 
-                  <span className="text-xs text-gray-300">{equipment}</span>
+                  <span className="text-xs text-gray-300">
+                    {equipment}
+                  </span>
                 </div>
 
                 <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
@@ -92,7 +102,9 @@ const WorkoutDetailsPage = async ({ params }) => {
                     Difficulty
                   </span>
 
-                  <span className="text-xs text-gray-300">{difficulty}</span>
+                  <span className="text-xs text-gray-300">
+                    {difficulty}
+                  </span>
                 </div>
 
                 <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
@@ -100,7 +112,9 @@ const WorkoutDetailsPage = async ({ params }) => {
                     Sets
                   </span>
 
-                  <span className="text-xs text-gray-300">{sets}</span>
+                  <span className="text-xs text-gray-300">
+                    {sets}
+                  </span>
                 </div>
 
                 <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
@@ -108,7 +122,9 @@ const WorkoutDetailsPage = async ({ params }) => {
                     Reps
                   </span>
 
-                  <span className="text-xs text-gray-300">{reps}</span>
+                  <span className="text-xs text-gray-300">
+                    {reps}
+                  </span>
                 </div>
 
                 <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
@@ -116,7 +132,9 @@ const WorkoutDetailsPage = async ({ params }) => {
                     Duration
                   </span>
 
-                  <span className="text-xs text-gray-300">{duration} min</span>
+                  <span className="text-xs text-gray-300">
+                    {duration} min
+                  </span>
                 </div>
 
                 <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
@@ -134,7 +152,9 @@ const WorkoutDetailsPage = async ({ params }) => {
                     Rating
                   </span>
 
-                  <span className="text-xs text-[#ccff00]">★ {rating}</span>
+                  <span className="text-xs text-[#ccff00]">
+                    ★ {rating}
+                  </span>
                 </div>
               </div>
 
