@@ -3,16 +3,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useFitLog } from "@/context/FitLogContext";
+
 import logo from "@/assets/logo.png";
 
 const Navbar = () => {
   const pathname = usePathname();
 
+  const { plan, saved } = useFitLog();
+
   return (
     <nav className="border-b border-white/10 bg-[#000000]">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-3">
-          <Image src={logo} alt="FitLog" width={32} height={32} />
+          <Image
+            src={logo}
+            alt="FitLog"
+            width={32}
+            height={32}
+          />
 
           <span className="font-oswald text-2xl font-bold tracking-wider text-white">
             FITLOG
@@ -49,8 +58,9 @@ const Navbar = () => {
             className="flex items-center gap-2 text-gray-300"
           >
             Plan
+
             <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#ccff00] px-2 font-bold text-black">
-              0
+              {plan.length}
             </span>
           </Link>
 
@@ -59,8 +69,9 @@ const Navbar = () => {
             className="flex items-center gap-2 text-gray-300"
           >
             Saved
+
             <span className="flex h-6 min-w-6 items-center justify-center rounded-full border border-gray-600 px-2 text-gray-400">
-              0
+              {saved.length}
             </span>
           </Link>
         </div>
